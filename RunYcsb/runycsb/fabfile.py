@@ -6,7 +6,7 @@ Created on Dec 12, 2014
 
 # Imports
 from SeriesEnv import SeriesEnv
-import sys, logging, os
+import sys, os
 from datetime import datetime
 from time import sleep
 from fabric.api import run, settings, env
@@ -33,7 +33,6 @@ def run_all():
     Highest level test.
     """ 
     print(sys.argv)
-    logging.root.debug(vars(seriesEnv)) 
     print(vars(seriesEnv))
     run_mongo()
     
@@ -167,7 +166,7 @@ def _ycsb(action, product, recordCount, operationCount, workload, storageAbbrev)
     run(ycsbCmd)
     
     endtime = datetime.now()
-    print('>>>> Completing _ycsb [' + str(endtime) + ', duration = ' + str(endtime-starttime) + ']') 
+    print('>>>> Completing _ycsb [' + str(endtime) + ', duration = ' + str(endtime-starttime) + ']\n') 
 
 # -------------------------------------------------------- 
 # _make_log_filename
@@ -184,7 +183,12 @@ def _make_log_filename(program, storageAbbrev, records, threads, workload):
 # _getStorageAbbreviation
 # --------------------------------------------------------
 def _getStorageAbbreviation(mongoParms, index):
-    """Get the storage engine abbreviation for log naming."""
+    """
+    Get the storage engine abbreviation for log naming.
+    The name is made of a storage engine moniker and
+    an index number that distinguishes every execution
+    by its mongod parameter set.
+    """
     
     # The elif statement helps futureproof for when wt becomes the default.
     abbrev = "mm"

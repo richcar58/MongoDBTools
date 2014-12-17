@@ -18,6 +18,6 @@
     "mongo_bin_path": "/home/rich/pkgs/mongodb-latest/mongodb-linux-x86_64-2.8.0-rc1/bin",
     "mongo_parms": [
         "--storageEngine mmapv1",
-        "--storageEngine wiredTiger"
+        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfig \"checkpoint=(wait=10)\""
     ]
 }

@@ -1,6 +1,9 @@
 '''
 Created on Dec 12, 2014
 
+This class is used by the RunYcsb's fabfile script to load, parse, validate 
+and initialize the configuration data in the series configuration json file.
+
 @author: rich
 '''
 # bin/mongod --dbpath /home/rich/pkgs/mongodb-latest/mongodb-linux-x86_64-2.8.0-rc1/data/db 
@@ -12,7 +15,7 @@ from fabric.api import env
 import json, os, logging
 
 # Constants.
-SERIES_PROPERTY_FILE = 'seriesConfig.json'
+SERIES_CONFIG_FILE = 'seriesConfig.json'
 
 class SeriesEnv():
     '''
@@ -59,7 +62,7 @@ class SeriesEnv():
         #                                            - specify storageEngine with its parms here
         #   
         # Read the configuration file.
-        with open(SERIES_PROPERTY_FILE, 'r') as fp:
+        with open(SERIES_CONFIG_FILE, 'r') as fp:
             self.seriesConfig = json.load(fp)
             
         # Validate the configuration. 
@@ -80,52 +83,52 @@ class SeriesEnv():
         # Check hosts array
         if (not config.has_key('hosts')) or (not config['hosts']) or (not isinstance(config['hosts'], list)):
             msg = "The hosts parameter is missing, empty or non-array in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
         # Check for missing dbpath_root
         if (not config.has_key('dbpath_root')) or (not config['dbpath_root']):
             msg = "The dbpath_root parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
         # Check for missing logpath_root
         if (not config.has_key('logpath_root')) or (not config['logpath_root']):
             msg = "The logpath_root parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
         # Check for missing mongo_bin_path
         if (not config.has_key('mongo_bin_path')) or (not config['mongo_bin_path']):
             msg = "The mongo_bin_path parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
         
         # Check for missing mongo_parms
         if (not config.has_key('mongo_parms')) or (not config['mongo_parms']) \
             or (not isinstance(config['mongo_parms'], list)):
             msg = "The mongo_storage_engine parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
         # Check for missing ycsb_bin_path
         if (not config.has_key('ycsb_bin_path')) or (not config['ycsb_bin_path']):
             msg = "The ycsb_bin_path parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
         
         # Check ycsb_workloads array
         if (not config.has_key('ycsb_workloads')) or (not config['ycsb_workloads']) \
                 or (not isinstance(config['ycsb_workloads'], list)):
             msg = "The ycsb_workloads parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
         # Check ycsb_recordcount array
         if (not config.has_key('ycsb_recordcount')) or (not config['ycsb_recordcount']) \
                 or (not isinstance(config['ycsb_recordcount'], list)):
             msg = "The ycsb_recordcount parameter is missing, empty or non-array in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
          
         # Check ycsb_operationcount array
@@ -136,19 +139,19 @@ class SeriesEnv():
                 and config['ycsb_operationcount'] \
                 and (not len(config['ycsb_operationcount']) == len(config['ycsb_recordcount'])):
             msg = "Arrays ycsb_recordcount and ycsb_operationcount are not the same length in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
          
         # Check ycsb_threadcount
         if (not config.has_key('ycsb_threadcount')) or (not config['ycsb_threadcount']):
             msg = "The ycsb_threadcount parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
         # Check series_name
         if (not config.has_key('series_name')) or (not config['series_name']):
             msg = "The series_name parameter is missing or empty in configuration file " \
-                  + SERIES_PROPERTY_FILE + "."
+                  + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
     # --------------------------------------------------------

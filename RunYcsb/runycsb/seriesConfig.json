@@ -1,5 +1,5 @@
 {
-    "hosts": [
+    "hosts": [ 
         "localhost"
     ], 
     "dbpath_root": "/home/rich/pkgs/mongodb-latest/mongodb-linux-x86_64-2.8.0-rc1/data/db",

@@ -1,6 +1,10 @@
 '''
 Created on Dec 12, 2014
 
+This script times mongod execution under various configuration and with
+various loads as specified in the seriesConfig.json file that must 
+reside in the same directory as this script. 
+
 @author: rich
 '''
 

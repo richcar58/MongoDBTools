@@ -1,5 +1,5 @@
 {
-    "hosts": [
+    "hosts": [ 
         "localhost"
     ], 
     "dbpath_root": "/mnt/lvdata/mongo/data/db",

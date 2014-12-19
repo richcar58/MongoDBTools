@@ -5,10 +5,12 @@
     "dbpath_root": "/mnt/lvdata/mongo/data/db",
     "logpath_root": "/home/ubuntu/results", 
     "series_name": "rc3", 
+    "series_repeat": 5,
+    "dry_run": false,
     
     "ycsb_bin_path": "/home/ubuntu/git/external_benchmarks/benchmarks/thumbtack-ycsb/bin",
     "ycsb_operationcount": [], 
-    "ycsb_recordcount": [50000000], 
+    "ycsb_recordcount": [5000000, 10000000, 15000000, 20000000, 50000000], 
     "ycsb_threadcount": 12, 
     "ycsb_workloads": [
         "workloada"

@@ -1,0 +1,26 @@
+{
+    "hosts": [
+        "localhost"
+    ], 
+    "dbpath_root": "/mnt/lvdata/mongo/data/db",
+    "logpath_root": "/home/ubuntu/results", 
+    "series_name": "rc3", 
+    "series_repeat": 1,
+    "dry_run": false,
+    
+    "ycsb_bin_path": "/home/ubuntu/git/external_benchmarks/benchmarks/thumbtack-ycsb/bin",
+    "ycsb_operationcount": [], 
+    "ycsb_recordcount": [50000000], 
+    "ycsb_threadcount": 12, 
+    "ycsb_workloads": [
+        "workloada"
+    ],
+    
+    "mongo_bin_path": "/home/ubuntu/pkgs/mongodb-linux-x86_64-ubuntu1204-2.8.0-rc3/bin",
+    "mongo_parms": [
+        "--storageEngine mmapv1",
+        "--storageEngine wiredTiger",
+        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfigString \"checkpoint=(wait=10)\"",
+        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfigString \"checkpoint=\""
+    ]
+}

@@ -23,6 +23,12 @@ class SeriesEnv():
     '''
     
     # --------------------------------------------------------
+    # Constants
+    # --------------------------------------------------------
+    DEFAULT_SERIES_REPEAT = 1
+    DEFAULT_DRY_RUN = False
+    
+    # --------------------------------------------------------
     # Fields
     # --------------------------------------------------------
     # The mapping of configuration parameters 
@@ -50,6 +56,9 @@ class SeriesEnv():
         #  dbpath_root          mandatory    string, path to database directory
         #  logpath_root         mandatory    string, path to root directory for all logs
         #  series_name          mandatory    string, subdirectory name for this run's mongo and ycsb logs 
+        #  series_repeat        optional     integer, number of time whole series repeats (default = 1)
+        #
+        #  dry_run              optional     boolean, echo command be don't execute anything (default = False)
         #
         #  ycsb_bin_path        mandatory    string, path to ycsb bin directory
         #  ycsb_operationcount  optional     integer (ignores negative numbers)
@@ -154,6 +163,20 @@ class SeriesEnv():
                   + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
+        # Check series_repeat
+        if (config.has_key('series_repeat')) and config['series_repeat'] \
+                and (not isinstance(config['series_repeat'], (long, int))):
+            msg = "The optional series_repeat parameter must be specified as an integer value in configuration file " \
+                  + SERIES_CONFIG_FILE + "."
+            raise Exception(msg) 
+            
+        # Check dry_run
+        if (config.has_key('dry_run')) and config['dry_run'] \
+                and (not isinstance(config['dry_run'], bool)):
+            msg = "The optional dry_run parameter must be specified as a boolean value in configuration file " \
+                  + SERIES_CONFIG_FILE + "."
+            raise Exception(msg) 
+            
     # --------------------------------------------------------
     # _processConfig
     # --------------------------------------------------------
@@ -167,6 +190,14 @@ class SeriesEnv():
            
         # Construct mongo_dbpath (assumes Linux)
         self.dbpath = config['dbpath_root']
+            
+        # Make sure the series repeat number is always assigned.
+        if (not config.has_key('series_repeat')) or (not config['series_repeat']):  
+            config['series_repeat'] = self.DEFAULT_SERIES_REPEAT;  
+            
+        # Make sure the dry_run value is always assigned.
+        if (not config.has_key('dry_run')) or (not config['dry_run']):  
+            config['dry_run'] = self.DEFAULT_DRY_RUN;  
             
         # Assign default operation count if none provided.  On average,
         # we do a read and an update on each record.

@@ -1,0 +1,23 @@
+{
+    "hosts": [ 
+        "localhost"
+    ], 
+    "dbpath_root": "/home/rich/pkgs/mongodb-linux-x86_64-ubuntu1204-2.8.0-rc3/data/db",
+    "logpath_root": "/home/rich/work/testresults", 
+    "series_name": "firstRun", 
+    
+    "ycsb_bin_path": "/home/rich/git/external_benchmarks/benchmarks/thumbtack-ycsb/bin",
+    "ycsb_operationcount": [], 
+    "ycsb_recordcount": [50000], 
+    "ycsb_threadcount": 8, 
+    "ycsb_workloads": [
+        "workloada",
+        "workloadb"
+    ],
+    
+    "mongo_bin_path": "/home/rich/pkgs/mongodb-linux-x86_64-ubuntu1204-2.8.0-rc3/bin",
+    "mongo_parms": [
+        "--storageEngine mmapv1",
+        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfigString \"checkpoint=(wait=10)\""
+    ]
+}

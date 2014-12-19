@@ -11,14 +11,14 @@
     "ycsb_recordcount": [5000000, 10000000, 15000000, 20000000], 
     "ycsb_threadcount": 12, 
     "ycsb_workloads": [
-        "workloada",
+        "workloada"
     ],
     
-    "mongo_bin_path": "/home/ubuntu/pkgs/mongodb-linux-x86_64-2.8.0-rc2/bin",
+    "mongo_bin_path": "/home/ubuntu/pkgs/mongodb-linux-x86_64-ubuntu1204-2.8.0-rc3/bin",
     "mongo_parms": [
         "--storageEngine mmapv1",
         "--storageEngine wiredTiger",
-        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfig \"checkpoint=(wait=10)\"",
-        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfig \"checkpoint=\""
+        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfigString \"checkpoint=(wait=10)\"",
+        "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfigString \"checkpoint=\""
     ]
 }

@@ -140,12 +140,10 @@ def _mongo_start(recordCount, mongoParms, workload, storageAbbrev):
 def _mongo_stop():
     """Stop all mongod instances"""
     starttime = datetime.now()
-    print('>>>> Starting mongo_stop [' + str(starttime) + ']')
-    # The -9 is key in avoiding timing issues by specifying
-    # a more immediate shutdown of mongod. 
+    print('>>>> Starting mongo_stop [' + str(starttime) + ']') 
     with settings(warn_only=True):
-        run('killall -9 mongod')
-        sleep(10)
+        run('killall mongod')
+        sleep(5)
 
 # -------------------------------------------------------- 
 # _ycsb

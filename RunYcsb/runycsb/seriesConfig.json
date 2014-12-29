@@ -21,5 +21,6 @@
     "mongo_parms": [
         "--storageEngine mmapv1",
         "--storageEngine wiredTiger --nojournal --wiredTigerEngineConfig \"checkpoint=(wait=10)\""
-    ]
+    ],
+    "csv_file": true
 }

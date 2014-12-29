@@ -11,7 +11,7 @@ import os, logging, glob
 
 from CollateElement import CollateElement
 from SeriesEnv import SeriesEnv
-
+from mystats import stddev
 
 class CollateResults:
     '''
@@ -94,12 +94,20 @@ class CollateResults:
         keyList.sort()
         self.LOG.debug("Number of result elements: " + str(len(keyList)))
         
+        # Initialize CSV variables
+        csvList = []
+        csvDelimiter = self.seriesEnv.seriesConfig['csv_delimiter']
+        
         # Write results for each key.
         for key in keyList:
             # Initialize loop vars.
             firstTime = True
             loadAvg = 0
             runAvg  = 0
+            loadList = []
+            runList  = []
+            loadStdev = 0
+            runStdev  = 0
             loadCnt = 0
             runCnt  = 0
             loadString = "Load (ops/s): "
@@ -109,6 +117,7 @@ class CollateResults:
             elements = self.resultDict[key]
             for element in elements:
                 if element.ycsbLoad:
+                    loadList.append(element.ycsbLoad.throughput)
                     loadAvg += element.ycsbLoad.throughput
                     loadCnt += 1
                     if firstTime:
@@ -116,6 +125,7 @@ class CollateResults:
                     else:
                         loadString += ", " + str(element.ycsbLoad.throughput)
                 if element.ycsbRun:
+                    runList.append(element.ycsbRun.throughput)
                     runAvg += element.ycsbRun.throughput
                     runCnt += 1
                     if firstTime:
@@ -128,16 +138,44 @@ class CollateResults:
             loadAvg = loadAvg // loadCnt
             runAvg  = runAvg  // runCnt
             
-            # Create final output string.
-            output = '------ ' + key + "\n"
-            output += loadString + "\n"
-            output += "Load average: " + str(loadAvg) + "\n"
-            output += runString + "\n"
-            output += "Run average : " + str(runAvg) + "\n"
+            # Calculate throughput standard deviations.
+            loadStdev = int(stddev(loadList))
+            runStdev  = int(stddev(runList))
             
-            # Print the current element's output.
-            print(output)
+            # Conditionally print the current element's output.
+            if self.seriesEnv.seriesConfig['report']:
+                output = '------ ' + key + "\n"
+                output += loadString + "\n"
+                output += "Load average: " + str(loadAvg) + "\n"
+                output += "Load stdev: " + str(loadStdev) + "\n"
+                output += runString + "\n"
+                output += "Run average : " + str(runAvg) + "\n"
+                output += "Run stdev: " + str(runStdev) + "\n"
+                print(output)
     
+            # Conditionally accumulate csv file records.
+            if self.seriesEnv.seriesConfig['csv_file']:
+                formattedKey = key.replace('"', '""')
+                formattedLoadString = str(loadList).replace(',', csvDelimiter)
+                formattedLoadString = formattedLoadString.replace('[', '')
+                formattedLoadString = formattedLoadString.replace(']', '')
+                formattedLoadString = formattedLoadString.replace(' ', '')
+                formattedRunString  = str(runList).replace(',', csvDelimiter)
+                formattedRunString  = formattedRunString.replace('[', '')
+                formattedRunString  = formattedRunString.replace(']', '')
+                formattedRunString  = formattedRunString.replace(' ', '')
+                loadRec = formattedKey + csvDelimiter + "load" + csvDelimiter + str(loadAvg) + \
+                            csvDelimiter + str(loadStdev) + csvDelimiter + formattedLoadString
+                runRec = formattedKey + csvDelimiter + "run" + csvDelimiter + str(runAvg) + \
+                            csvDelimiter + str(runStdev) + csvDelimiter + formattedRunString
+                csvList.append(loadRec)
+                csvList.append(runRec)
+         
+        # Optionally write csv file. 
+        if self.seriesEnv.seriesConfig['csv_file']:
+            for rec in csvList:
+                print(rec)
+            
 # -------------------------------------------------------- 
 # Main
 # --------------------------------------------------------

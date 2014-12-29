@@ -27,6 +27,9 @@ class SeriesEnv():
     # --------------------------------------------------------
     DEFAULT_SERIES_REPEAT = 1
     DEFAULT_DRY_RUN = False
+    DEFAULT_REPORT = True
+    DEFAULT_CSV_FILE = False
+    DEFAULT_CSV_DELIMITER = ','
     
     # --------------------------------------------------------
     # Class Variables
@@ -71,7 +74,11 @@ class SeriesEnv():
         #  mongo_bin_path       mandatory    string, path to bin directory containing mongod 
         #  mongo_parms          mandatory    string, all parms other than --dbpath and --logpath 
         #                                            - specify storageEngine with its parms here
-        #   
+        #  
+        #  report               optional     boolean, write result summary to stdout (default = True)
+        #  csv_file             optional     boolean, write result summary to RunYcsb.csv in log directory (default = false)
+        #  csv_delimiter        optional     single character or escape sequence (ex: "\t" for tab) (default = ",") 
+        # 
         # Read the configuration file.
         with open(SERIES_CONFIG_FILE, 'r') as fp:
             self.seriesConfig = json.load(fp)
@@ -179,6 +186,27 @@ class SeriesEnv():
                   + SERIES_CONFIG_FILE + "."
             raise Exception(msg) 
             
+        # Check report
+        if (config.has_key('report')) and config['report'] \
+                and (not isinstance(config['report'], bool)):
+            msg = "The optional report parameter must be specified as a boolean value in configuration file " \
+                  + SERIES_CONFIG_FILE + "."
+            raise Exception(msg) 
+            
+        # Check csv_file
+        if (config.has_key('csv_file')) and config['csv_file'] \
+                and (not isinstance(config['dry_run'], bool)):
+            msg = "The optional csv_file parameter must be specified as a boolean value in configuration file " \
+                  + SERIES_CONFIG_FILE + "."
+            raise Exception(msg) 
+            
+        # Check csv_file
+        if (config.has_key('csv_delimiter')) and config['csv_delimiter'] \
+                and (not isinstance(config['csv_delimiter'], str) or (not len(config['csv_delimiter']) == 1)):
+            msg = "The optional csv_delimiter parameter must be a string of length 1 in configuration file " \
+                  + SERIES_CONFIG_FILE + "."
+            raise Exception(msg) 
+            
     # --------------------------------------------------------
     # _processConfig
     # --------------------------------------------------------
@@ -200,6 +228,18 @@ class SeriesEnv():
         # Make sure the dry_run value is always assigned.
         if (not config.has_key('dry_run')) or (not config['dry_run']):  
             config['dry_run'] = self.DEFAULT_DRY_RUN;  
+            
+        # Make sure the report value is always assigned.
+        if (not config.has_key('report')) or (not config['report']):  
+            config['report'] = self.DEFAULT_REPORT;  
+            
+        # Make sure the csv_file value is always assigned.
+        if (not config.has_key('csv_file')) or (not config['csv_file']):  
+            config['csv_file'] = self.DEFAULT_CSV_FILE;  
+            
+        # Make sure the csv_delimiter value is always assigned.
+        if (not config.has_key('csv_delimiter')) or (not config['csv_delimiter']):  
+            config['csv_delimiter'] = self.DEFAULT_CSV_DELIMITER;  
             
         # Assign default operation count if none provided.  On average,
         # we do a read and an update on each record.

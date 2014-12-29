@@ -29,15 +29,12 @@ class SeriesEnv():
     DEFAULT_DRY_RUN = False
     
     # --------------------------------------------------------
-    # Fields
+    # Class Variables
     # --------------------------------------------------------
-    # The mapping of configuration parameters 
-    # read from the configuration json file.
-    seriesConfig = {}  
-    
-    # Paths calculated from input file parameters.
-    logpath = None
-    dbpath = None
+    # Set the log level here.
+    LOG = logging.getLogger('SeriesEnv')
+    LOG.setLevel(logging.INFO)
+    LOG.addHandler(logging.StreamHandler())
     
     # --------------------------------------------------------
     # Constructor
@@ -47,8 +44,13 @@ class SeriesEnv():
         Constructor
         '''
         
-        # Set logging level.
-        logging.root.setLevel(logging.INFO)
+        # The mapping of configuration parameters 
+        # read from the configuration json file.
+        self.seriesConfig = {} 
+         
+        # Paths calculated from input file parameters.
+        self.logpath = None
+        self.dbpath = None
         
         # Properties expected in the config file are:
         #
@@ -81,8 +83,8 @@ class SeriesEnv():
         self._processConfig(self.seriesConfig)
         
         # Write configuration debug message   
-        logging.debug("----- seriesConfig:")
-        logging.debug(self.seriesConfig)
+        self.LOG.debug("----- seriesConfig:")
+        self.LOG.debug(self.seriesConfig)
             
     # --------------------------------------------------------
     # _validateConfig
@@ -210,6 +212,5 @@ class SeriesEnv():
 # --------------------------------------------------------
 if __name__ == '__main__':
     x = SeriesEnv()
-    logging.info("SeriesEnv settings:")
-    logging.info(vars(x))
-
+    x.LOG.info("SeriesEnv settings:")
+    x.LOG.info(vars(x))

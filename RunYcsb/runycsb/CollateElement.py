@@ -213,5 +213,3 @@ class CollateElement:
             return namelist[0] + "/" + namelist[1].replace("mongod-", "ycsb-")
         else:
             return self.mongoLogFileName.replace("mongod-", "ycsb-")
-        
-   

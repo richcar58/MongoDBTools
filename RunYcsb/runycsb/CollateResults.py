@@ -23,6 +23,7 @@ class CollateResults:
     # --------------------------------------------------------
     MONGO_LOG_PREFIX = "mongod-"
     YCSB_LOG_PREFIX  = "ycsb-"
+    CSV_FILENAME = "RunYcsb.csv"
     
     # --------------------------------------------------------
     # Class Variables
@@ -153,28 +154,27 @@ class CollateResults:
                 output += "Run stdev: " + str(runStdev) + "\n"
                 print(output)
     
-            # Conditionally accumulate csv file records.
+            # Conditionally accumulate csv file records.  
+            # Note that RFC 4180 specifies DOS-style line end and
+            # two double quotes in a string to signify a double 
+            # quote character.  If strings are double quoted then
+            # internal delimiter characters won't be interpreted as
+            # delimiters.
             if self.seriesEnv.seriesConfig['csv_file']:
-                formattedKey = key.replace('"', '""')
-                formattedLoadString = str(loadList).replace(',', csvDelimiter)
-                formattedLoadString = formattedLoadString.replace('[', '')
-                formattedLoadString = formattedLoadString.replace(']', '')
-                formattedLoadString = formattedLoadString.replace(' ', '')
-                formattedRunString  = str(runList).replace(',', csvDelimiter)
-                formattedRunString  = formattedRunString.replace('[', '')
-                formattedRunString  = formattedRunString.replace(']', '')
-                formattedRunString  = formattedRunString.replace(' ', '')
-                loadRec = formattedKey + csvDelimiter + "load" + csvDelimiter + str(loadAvg) + \
-                            csvDelimiter + str(loadStdev) + csvDelimiter + formattedLoadString
-                runRec = formattedKey + csvDelimiter + "run" + csvDelimiter + str(runAvg) + \
-                            csvDelimiter + str(runStdev) + csvDelimiter + formattedRunString
-                csvList.append(loadRec)
-                csvList.append(runRec)
+                formattedKey = '"' + key.replace('"', '""') + '"'
+                loadRec = formattedKey + csvDelimiter + '"load"' + csvDelimiter + str(loadAvg) + \
+                            csvDelimiter + str(loadCnt) + csvDelimiter + str(loadStdev)
+                runRec = formattedKey + csvDelimiter + '"run"' + csvDelimiter + str(runAvg) + \
+                            csvDelimiter + str(runCnt) + csvDelimiter + str(runStdev)
+                csvList.append(loadRec + "\r\n")
+                csvList.append(runRec + "\r\n")
          
         # Optionally write csv file. 
         if self.seriesEnv.seriesConfig['csv_file']:
-            for rec in csvList:
-                print(rec)
+            csvFile = os.path.join(self.seriesEnv.logpath, self.CSV_FILENAME)
+            with open(csvFile, 'w') as f:
+                for rec in csvList:
+                    f.write(rec)
             
 # -------------------------------------------------------- 
 # Main

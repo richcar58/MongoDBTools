@@ -10,6 +10,10 @@ import logging
 from CollateYcsb import CollateYcsb
 
 class CollateElement:
+    '''
+    This class recognizes the mongod syncDelay option introduced in 2.8.0 rc5.
+    Use CollateElement-280rc4.py for previous 2.8.0 release candidates. 
+    '''
     # --------------------------------------------------------
     # Constants
     # --------------------------------------------------------
@@ -92,6 +96,8 @@ class CollateElement:
                         #
                         #  syncPeriodSecs: 10.0
                         #  syncPeriodSecs: 0.0
+                        #
+                        # Note: We expect a single space before and after the number.
                         #
                         syncdelayText = ' syncPeriodSecs: '
                         syncdelayIndex = options.find(syncdelayText)

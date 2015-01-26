@@ -10,6 +10,13 @@ import logging
 from CollateYcsb import CollateYcsb
 
 class CollateElement:
+    '''
+    This class recognizes the mongod configString option used with WiredTiger
+    before 2.8.0 rc5.  Use CollateElement.py for 2.8.0 release candidates after rc4
+    and this class for release candidates up to and including rc4.  Using this 
+    class entails changing the CollateResults.py code or renaming the CollateElement*.py
+    files.  Either way, it's not pretty but this code will probably be obsolete soon. 
+    '''
     # --------------------------------------------------------
     # Constants
     # --------------------------------------------------------

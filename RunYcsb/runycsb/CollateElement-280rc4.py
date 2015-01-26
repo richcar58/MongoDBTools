@@ -50,7 +50,7 @@ class CollateElement:
         # YCSB parameters gleaned from mongod log file.
         self.storageEngine = None
         self.isJournaling = True
-        self.syncdelay = None
+        self.checkpointSetting = None
     
         # YCSB results gleaned from ycsb log file.
         self.ycsbLoad = None
@@ -88,26 +88,25 @@ class CollateElement:
                         if options.find(' journal: { enabled: false }') > -1: 
                             self.isJournaling = False
                             
-                        # Get the syncdelay setting.  If it exists, it looks something like:
+                        # Get checkpoint setting.  If it exists, it looks something like:
                         #
-                        #  syncPeriodSecs: 10.0
-                        #  syncPeriodSecs: 0.0
+                        #  configString: "checkpoint=(wait=10)"
+                        #  configString: "checkpoint="
                         #
-                        syncdelayText = ' syncPeriodSecs: '
-                        syncdelayIndex = options.find(syncdelayText)
-                        if syncdelayIndex > -1:
-                            # Find the number which we expect to follow syncdelayText.
-                            # We extract the substring that has a single space character on
-                            # both sides.  Note that this parse is sensitive to whitespace
+                        configString = ' configString: "'
+                        startConfigString = options.find(configString)
+                        if startConfigString > -1:
+                            # Find the closing double quote (which we expect to be there).
+                            # We extract the substring that contains the opening and closing
+                            # double quotes.  Note that this parse is sensitive to whitespace
                             # and otherwise not particularly resilient.
-                            nextSpace = options[syncdelayIndex+len(syncdelayText):].find(' ')
-                            self.syncdelay = options[
-                                    syncdelayIndex+len(syncdelayText):
-                                      syncdelayIndex+len(syncdelayText)+nextSpace
+                            nextDQuote = options[startConfigString+len(configString):].find('"')
+                            self.checkpointSetting = options[
+                                    startConfigString+len(configString)-1:
+                                      startConfigString+len(configString)+1+nextDQuote
                                 ]
-                            
                         self.LOG.debug(" ** found wiredTiger: journal=" + str(self.isJournaling) + \
-                                      ", syncdelay=" + str(self.syncdelay)) 
+                                      ", checkpointSetting=" + str(self.checkpointSetting)) 
                     # -- No known storage engine specified.
                     else:
                         msg = "No known storage engine designated in options record in log file" + \
@@ -186,8 +185,8 @@ class CollateElement:
         if not self.isJournaling:
             key += "|nojournal"
         if self.storageEngine is self.STORAGE_ENGINE_WIREDTIGER:
-            if self.syncdelay:
-                key += "|sync=" + self.syncdelay
+            if self.checkpointSetting:
+                key += "|" + self.checkpointSetting
                 
         # We use the load count parameters which are always the
         # same as the run count parameters.

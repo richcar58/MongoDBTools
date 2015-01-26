@@ -30,7 +30,7 @@ class CollateResults:
     # --------------------------------------------------------
     # Set the log level here.
     LOG = logging.getLogger('CollateResults')
-    LOG.setLevel(logging.INFO)
+    LOG.setLevel(logging.DEBUG)
     LOG.addHandler(logging.StreamHandler())
     
     # --------------------------------------------------------

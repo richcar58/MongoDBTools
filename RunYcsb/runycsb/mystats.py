@@ -6,6 +6,8 @@ def mean(lst):
 
 def stddev(lst):
     """returns the sample standard deviation of lst"""
+    if len(lst) <= 1:
+        return 0
     mn = mean(lst)
     variance = (sum([(e-mn)**2 for e in lst]))/(len(lst)-1)
     return sqrt(variance)
